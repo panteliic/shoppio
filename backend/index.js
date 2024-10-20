@@ -12,7 +12,7 @@ app.get("/",(req,res)=>{
 })
 app.get("/setup",async (req,res)=>{
     try{
-        await pool.query("CREATE TABLE users(userId SERIAL PRIMARY KEY, email VARCHAR(50),password VARCHAR(50),firstname VARCHAR(50),lastname VARCHAR(50),role ENUM('admin', 'user'))")
+        await pool.query("CREATE TABLE users(userId SERIAL PRIMARY KEY, email VARCHAR(50),password VARCHAR(50),firstname VARCHAR(50),lastname VARCHAR(50),role VARCHAR(50))")
         res.status(200).send("Create a table")
     }catch(err){
         res.sendStatus(500)
