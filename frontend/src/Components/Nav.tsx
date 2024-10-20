@@ -9,8 +9,8 @@ import searchIcon from "@/assets/search_icon.svg";
 export default function Nav() {
   const [auth, setAuth] = useState<boolean>(false);
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
-  const [firstName, seFirstName] = useState<string>("Nikola");
-  const [lastName, setLastName] = useState<string>("Pantelic");
+  const [firstName, seFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
   return (
     <div className="w-screen p-6 bg-primary m-auto flex flex-col gap-3">
       <div className="container flex m-auto items-center justify-between">
@@ -33,9 +33,11 @@ export default function Nav() {
               </p>
             </li>
           ) : (
-            <li className="flex items-center gap-2 text-primary-foreground cursor-pointer  text-lg">
-              <img src={userIcon} alt="profile icon" className="w-5" />
-              <p className="hidden md:flex"> Pijavite se</p>
+            <li>
+              <a href="/account/login" className="flex items-center gap-2 text-primary-foreground cursor-pointer  text-lg">
+                <img src={userIcon} alt="profile icon" className="w-5" />
+                <p className="hidden md:flex"> Pijavite se</p>
+              </a>
             </li>
           )}
           <li>
