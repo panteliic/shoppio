@@ -13,8 +13,19 @@ import {
 } from "@/Components/ui/form";
 import { Input } from "@/Components/ui/input";
 const formSchema = z.object({
-  email: z.string().min(2).max(50),
-  password: z.string().min(8).max(50),
+  email: z
+    .string()
+    .email()
+    .min(5)
+    .max(50, "Email must be up to 50 characters."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long.")
+    .max(50, "Password can be up to 50 characters long.")
+    .regex(
+      /^(?=.*[A-Z])(?=.*\d)/,
+      "Password must contain at least one uppercase letter and one number."
+    ),
 });
 
 function Login() {
@@ -58,19 +69,28 @@ function Login() {
                     <FormLabel className="text-xl">Paassword</FormLabel>
                     <FormControl>
                       <Input placeholder="Password..." {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      <a href="#" className="text-blue-700 underline">Forget Password?</a>
-                    </FormDescription>
+                    </FormControl>{" "}
                     <FormMessage />
+                    <FormDescription>
+                      <a href="#" className="text-blue-700 underline">
+                        Forget Password?
+                      </a>
+                    </FormDescription>
                   </FormItem>
                 )}
               />
             </div>
-            <Button type="submit" className="w-full p-5">Submit</Button>
+            <Button type="submit" className="w-full p-5">
+              Submit
+            </Button>
           </form>
         </Form>
-        <p>Not signed up yet? <a href="/account/register" className="text-blue-700 underline">Register Now.</a></p>
+        <p>
+          Not signed up yet?{" "}
+          <a href="/account/register" className="text-blue-700 underline">
+            Register Now.
+          </a>
+        </p>
       </div>
     </div>
   );
