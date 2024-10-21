@@ -42,8 +42,8 @@ function Login() {
   }
   return (
     <div className="text-foreground bg-background w-screen h-screen flex items-center justify-center">
-      <div className="text-secondary-foreground px-3 py-5 rounded w-1/4 flex flex-col gap-5 border-2 border-border">
-        <h1 className="text-xl font-bold">Login</h1>
+      <div className="text-secondary-foreground px-3 py-5 rounded w-3/4 flex flex-col gap-5 border-2 border-border md:w-1/2 lg:1/3 xl:w-1/4">
+        <h1 className="text-3xl font-bold">Login</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="flex flex-col gap-5">
