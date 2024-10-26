@@ -36,9 +36,23 @@ function Login() {
       password: "",
     },
   });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    try {
+      await fetch("http://localhost:5500/api/login", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      });
+      
+      form.reset();
+    } catch (err) {
+      console.log(err);
+    }
   }
   return (
     <div className="text-foreground bg-background w-screen h-screen flex items-center justify-center">
@@ -68,7 +82,11 @@ function Login() {
                   <FormItem>
                     <FormLabel className="text-xl">Paassword</FormLabel>
                     <FormControl>
-                      <Input placeholder="Password..." {...field} />
+                      <Input
+                        placeholder="Password..."
+                        {...field}
+                        type="password"
+                      />
                     </FormControl>{" "}
                     <FormMessage />
                     <FormDescription>

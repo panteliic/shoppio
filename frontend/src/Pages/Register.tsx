@@ -32,7 +32,7 @@ const formSchema = z
   })
   .refine((data) => data.password === data.confirm_password, {
     message: "Passwords do not match.",
-    path: ["confirm_password"], 
+    path: ["confirm_password"],
   });
 
 function Register() {
@@ -42,13 +42,29 @@ function Register() {
       email: "",
       password: "",
       confirm_password: "",
-      firstName:"",
-      lastName:"",
+      firstName: "",
+      lastName: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    try {
+      await fetch("http://localhost:5500/api/register", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        credentials: 'include',
+        body: JSON.stringify({
+          firstname: values.firstName,
+          lastname: values.lastName,
+          email: values.email,
+          password: values.password,
+        }),
+      });
+      form.reset();
+    } catch (err) {
+      console.log(err);
+    }
   }
   return (
     <div className="text-foreground bg-background w-screen h-screen flex items-center justify-center">
@@ -57,7 +73,7 @@ function Register() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="flex flex-col gap-5">
-            <FormField
+              <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
@@ -70,7 +86,7 @@ function Register() {
                   </FormItem>
                 )}
               />
-                          <FormField
+              <FormField
                 control={form.control}
                 name="lastName"
                 render={({ field }) => (
@@ -90,7 +106,11 @@ function Register() {
                   <FormItem>
                     <FormLabel className="text-xl">Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="johndoe@exapmle.com" {...field} type="email"/>
+                      <Input
+                        placeholder="johndoe@exapmle.com"
+                        {...field}
+                        type="email"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -103,7 +123,11 @@ function Register() {
                   <FormItem>
                     <FormLabel className="text-xl">Paassword</FormLabel>
                     <FormControl>
-                      <Input placeholder="Password..." {...field} type="password"/>
+                      <Input
+                        placeholder="Password..."
+                        {...field}
+                        type="password"
+                      />
                     </FormControl>{" "}
                     <FormMessage />
                   </FormItem>
@@ -116,7 +140,11 @@ function Register() {
                   <FormItem>
                     <FormLabel className="text-xl">Confirm Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Confirm Password..." {...field} type="password"/>
+                      <Input
+                        placeholder="Confirm Password..."
+                        {...field}
+                        type="password"
+                      />
                     </FormControl>{" "}
                     <FormMessage />
                   </FormItem>

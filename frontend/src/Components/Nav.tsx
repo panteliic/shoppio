@@ -5,12 +5,11 @@ import cartIcon from "@/assets/shopping_cart.svg";
 import userIcon from "@/assets/user-regular.svg";
 import userProfileIcon from "@/assets/circle-user-regular.svg";
 import searchIcon from "@/assets/search_icon.svg";
+import { useProvider } from "@/Context/Provider";
 
 export default function Nav() {
-  const [auth, setAuth] = useState<boolean>(false);
+  const provider = useProvider();
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
-  const [firstName, seFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
   return (
     <div className="w-screen p-6 bg-primary m-auto flex flex-col gap-3">
       <div className="container flex m-auto items-center justify-between">
@@ -25,11 +24,11 @@ export default function Nav() {
           <MagnifyingGlassIcon className=" w-12 cursor-pointer" />
         </div>
         <ul className="flex items-center gap-4 ">
-          {auth ? (
+          {provider.user ? (
             <li className="flex items-center gap-2 text-primary-foreground cursor-pointer text-lg">
               <img src={userProfileIcon} alt="profile icon" className="w-6" />
               <p className="hidden md:flex">
-                {firstName} {lastName}
+                {provider.user.firstname} {provider.user.lasname}
               </p>
             </li>
           ) : (

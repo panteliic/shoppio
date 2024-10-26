@@ -1,15 +1,22 @@
 import { createContext, useContext, useState } from "react";
 
 interface AppContextType {
-    user: string,
+    user: User | undefined,
     setUser: any,
 
+}
+interface User {
+  firstname: string;
+  lasname:string;
+  username: string;
+  password:string;
+  role: string;
 }
 
 const Context = createContext<AppContextType | null>(null);
 
 const Provider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<string>("idegas")
+    const [user, setUser] = useState<User>()
   return (
     <Context.Provider
       value={{
