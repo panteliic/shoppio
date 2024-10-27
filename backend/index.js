@@ -4,6 +4,7 @@ const cors = require("cors")
 const cookieParser = require('cookie-parser')
 const pool = require("./db");
 const userRouter = require("./Routes/users.routes");
+const authenticateToken = require('./middleware/auth.middleware');
 const port = 5500
 
 const app = express();
@@ -14,8 +15,8 @@ app.use(cors({
 }))
 app.use(cookieParser())
 
-app.get("/",(req,res)=>{
-    res.send("Ide gas radi")
+app.get("/proba",authenticateToken,(req,res)=>{
+    return res.send({ime: "Nikola"})
 })
 app.use("/api",userRouter)
 app.listen(port,()=> {

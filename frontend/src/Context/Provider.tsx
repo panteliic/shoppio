@@ -1,30 +1,62 @@
 import { createContext, useContext, useState } from "react";
+import { CookiesProvider, useCookies } from "react-cookie";
 
 interface AppContextType {
-    user: User | undefined,
-    setUser: any,
-
+  user: User | undefined;
+  setUser: (user: User | undefined) => void;
+  accessTokenCookie: string | undefined;
+  setAccessTokenCookie: (
+    name: "accessToken",
+    value: string,
+    options?: any
+  ) => void;
+  removeAccessTokenCookie: (name: "accessToken", options?: any) => void;
+  refreshTokenCookie: string | undefined;
+  setRefreshTokenCookie: (
+    name: "refreshToken",
+    value: string,
+    options?: any
+  ) => void;
+  removeRefreshTokenCookie: (name: "refreshToken", options?: any) => void;
 }
+
 interface User {
   firstname: string;
-  lasname:string;
+  lastname: string;
   username: string;
-  password:string;
+  password: string;
   role: string;
 }
 
 const Context = createContext<AppContextType | null>(null);
 
 const Provider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<User>();
+  const [cookies, setCookie, removeCookie] = useCookies([
+    "accessToken",
+    "refreshToken",
+  ]);
+
+  const accessTokenCookie = cookies.accessToken;
+  const refreshTokenCookie = cookies.refreshToken;
+
   return (
     <Context.Provider
       value={{
         user,
         setUser,
+        accessTokenCookie,
+        setAccessTokenCookie: (name, value, options) =>
+          setCookie(name, value, options),
+        removeAccessTokenCookie: (name, options) => removeCookie(name, options),
+        refreshTokenCookie,
+        setRefreshTokenCookie: (name, value, options) =>
+          setCookie(name, value, options),
+        removeRefreshTokenCookie: (name, options) =>
+          removeCookie(name, options),
       }}
     >
-      {children}
+      <CookiesProvider>{children}</CookiesProvider>
     </Context.Provider>
   );
 };

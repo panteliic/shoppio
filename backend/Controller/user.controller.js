@@ -50,7 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true, 
+      secure: true,
       sameSite: "Strict",
       maxAge: 15 * 60 * 1000,
     });
@@ -60,7 +60,7 @@ const registerUser = asyncHandler(async (req, res) => {
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.json({message:"User created"},{status:201});
+    res.json({ message: "User created" }, { status: 201 });
 
     res.status(200).json({ message: "User created" });
   } catch (err) {
@@ -71,44 +71,43 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  
-  try{
-    const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ]);
+
+  try {
+    const userResult = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
     const user = userResult.rows[0];
-    
+
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-  
+
     const accessToken = genrateAccessToken(user.userid);
     const refreshToken = await genarateRefreshToken(user.userid);
-    
+
     res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: true, 
+      httpOnly: false,
+      secure: true,
       sameSite: "Strict",
-      maxAge: 15 * 60 * 1000,
+      maxAge:  60* 1000,
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true, 
+      secure: true,
       sameSite: "Strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     res.json({ message: "User logged in" });
-    
-  }catch(err) {
+  } catch (err) {
     res.status(401).json({ error: "Unautorized", err });
-
   }
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-
-  if (!refreshToken) return res.sendStatus(401).send("Unautorized");
+  
+  if (!refreshToken) return res.status(401).send("Unauthorized");
 
   const tokenResult = await pool.query(
     "SELECT * FROM refresh_tokens WHERE token = $1",
@@ -116,20 +115,23 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   );
   const token = tokenResult.rows[0];
 
-  if (!token) return res.sendStatus(403).sendStatus("Forbidden");
+  if (!token) return res.status(403).send("Forbidden");
 
   jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.status(403).send("Forbidden");
     const newAccessToken = genrateAccessToken(user.userId);
-    
+
     res.cookie("accessToken", newAccessToken, {
-      httpOnly: true,
-      secure: true, 
+      httpOnly: false,
+      secure: true,
       sameSite: "Strict",
-      maxAge: 15 * 60 * 1000,
+      maxAge: 60 * 1000,
     });
+
+    res.sendStatus(200);
   });
 });
+
 const logout = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
@@ -142,4 +144,4 @@ const logout = asyncHandler(async (req, res) => {
 
   res.sendStatus(204);
 });
-module.exports = { registerUser, loginUser,refreshAccessToken, logout };
+module.exports = { registerUser, loginUser, refreshAccessToken, logout };
