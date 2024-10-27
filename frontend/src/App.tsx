@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Nav from "./Components/Nav"
 import ProductsList from "./Components/ProductsList";
-import { useProvider } from "./Context/Provider"
+
 import api from "./api";
 function App() {
   useEffect(() => {
@@ -17,7 +17,7 @@ function App() {
     proba();
   }, []);
   return (
-    <div className="text-xl">
+    <div className="text-xl overflow-x-hidden">
       <Nav/>
       <ProductsList/>
     </div>

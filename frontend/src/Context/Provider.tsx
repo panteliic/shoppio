@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import api from "@/api";
+import { createContext, useContext, useEffect, useState } from "react";
 import { CookiesProvider, useCookies } from "react-cookie";
 
 interface AppContextType {
@@ -24,7 +25,6 @@ interface User {
   firstname: string;
   lastname: string;
   username: string;
-  password: string;
   role: string;
 }
 
@@ -39,7 +39,20 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
 
   const accessTokenCookie = cookies.accessToken;
   const refreshTokenCookie = cookies.refreshToken;
+  useEffect(() => {
+    async function authUser() {
+      try {
+        const response = await api.get('/user');
+        const user :User= response.data
+        setUser(user)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
 
+    authUser();
+    
+  }, [accessTokenCookie]);
   return (
     <Context.Provider
       value={{

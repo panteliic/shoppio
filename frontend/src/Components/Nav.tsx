@@ -10,6 +10,7 @@ import { useProvider } from "@/Context/Provider";
 export default function Nav() {
   const provider = useProvider();
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
+  
   return (
     <div className="w-screen p-6 bg-primary m-auto flex flex-col gap-3">
       <div className="container flex m-auto items-center justify-between">
@@ -28,7 +29,7 @@ export default function Nav() {
             <li className="flex items-center gap-2 text-primary-foreground cursor-pointer text-lg">
               <img src={userProfileIcon} alt="profile icon" className="w-6" />
               <p className="hidden md:flex">
-                {provider.user.firstname} {provider.user.lasname}
+                {provider.user.firstname} {provider.user.lastname}
               </p>
             </li>
           ) : (

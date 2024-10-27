@@ -12,6 +12,10 @@ import {
   FormMessage,
 } from "@/Components/ui/form";
 import { Input } from "@/Components/ui/input";
+import { useProvider } from "@/Context/Provider";
+import { useNavigate } from "react-router-dom";
+
+
 const formSchema = z.object({
   email: z
     .string()
@@ -28,7 +32,16 @@ const formSchema = z.object({
     ),
 });
 
+interface User {
+  firstname: string;
+  lastname: string;
+  username: string;
+  role: string;
+}
+
 function Login() {
+  const provider = useProvider();
+  const navigate = useNavigate()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,10 +49,11 @@ function Login() {
       password: "",
     },
   });
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     try {
-      await fetch("http://localhost:5500/api/login", {
+      const response = await fetch("http://localhost:5500/api/login", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         credentials: 'include',
@@ -48,20 +62,27 @@ function Login() {
           password: values.password,
         }),
       });
-      
+
+      if (!response.ok) {
+        throw new Error('Login failed: ' + response.statusText);
+      }
+
+      const userData: User = await response.json();
+      provider.setUser(userData);
       form.reset();
+      navigate("/");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
+
   return (
     <div className="text-foreground bg-background w-screen h-screen flex items-center justify-center">
-      <div className="text-secondary-foreground px-3 py-5 rounded w-3/4 flex flex-col gap-5 border-2 border-border md:w-1/2 lg:1/3 xl:w-1/4">
+      <div className="text-secondary-foreground px-3 py-5 rounded w-3/4 flex flex-col gap-5 border-2 border-border md:w-1/2 lg:w-1/3 xl:w-1/4">
         <h1 className="text-3xl font-bold">Login</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="flex flex-col gap-5">
-              {" "}
               <FormField
                 control={form.control}
                 name="email"
@@ -69,7 +90,7 @@ function Login() {
                   <FormItem>
                     <FormLabel className="text-xl">Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="johndoe@exapmle.com" {...field} />
+                      <Input placeholder="johndoe@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -80,14 +101,14 @@ function Login() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl">Paassword</FormLabel>
+                    <FormLabel className="text-xl">Password</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Password..."
                         {...field}
                         type="password"
                       />
-                    </FormControl>{" "}
+                    </FormControl>
                     <FormMessage />
                     <FormDescription>
                       <a href="#" className="text-blue-700 underline">

@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser')
 const pool = require("./db");
 const userRouter = require("./Routes/users.routes");
 const authenticateToken = require('./middleware/auth.middleware');
+const { getAuthUser } = require('./Controller/user.controller');
+
 const port = 5500
 
 const app = express();
@@ -18,6 +20,7 @@ app.use(cookieParser())
 app.get("/proba",authenticateToken,(req,res)=>{
     return res.send({ime: "Nikola"})
 })
+app.get("/user",authenticateToken,getAuthUser)
 app.use("/api",userRouter)
 app.listen(port,()=> {
     console.log(`Server running on port : ${port}`);

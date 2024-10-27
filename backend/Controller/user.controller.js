@@ -60,7 +60,7 @@ const registerUser = asyncHandler(async (req, res) => {
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.json({ message: "User created" }, { status: 201 });
+    res.json(userResult, { status: 201 });
 
     res.status(200).json({ message: "User created" });
   } catch (err) {
@@ -90,7 +90,7 @@ const loginUser = asyncHandler(async (req, res) => {
       httpOnly: false,
       secure: true,
       sameSite: "Strict",
-      maxAge:  60* 1000,
+      maxAge:  15*60* 1000,
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -98,7 +98,7 @@ const loginUser = asyncHandler(async (req, res) => {
       sameSite: "Strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.json({ message: "User logged in" });
+    res.json(user);
   } catch (err) {
     res.status(401).json({ error: "Unautorized", err });
   }
@@ -125,7 +125,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       httpOnly: false,
       secure: true,
       sameSite: "Strict",
-      maxAge: 60 * 1000,
+      maxAge:15* 60 * 1000,
     });
 
     res.sendStatus(200);
@@ -144,4 +144,11 @@ const logout = asyncHandler(async (req, res) => {
 
   res.sendStatus(204);
 });
-module.exports = { registerUser, loginUser, refreshAccessToken, logout };
+const getAuthUser = asyncHandler(async (req, res) => {
+  if (!req.user) {
+      return res.status(401).json({ message: 'User not authenticated' });
+  }
+  const user = await pool.query("SELECT firstname,lastname,email,role FROM users WHERE userId = $1",[req.user.userId])
+  res.json(user.rows[0]);
+});
+module.exports = { registerUser, loginUser, refreshAccessToken, logout, getAuthUser};
