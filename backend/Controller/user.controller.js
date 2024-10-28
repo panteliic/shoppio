@@ -90,7 +90,7 @@ const loginUser = asyncHandler(async (req, res) => {
       httpOnly: false,
       secure: true,
       sameSite: "Strict",
-      maxAge:  15*60* 1000,
+      maxAge: 15 * 60 * 1000,
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -106,30 +106,30 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  
-  if (!refreshToken) return res.status(401).send("Unauthorized");
 
-  const tokenResult = await pool.query(
-    "SELECT * FROM refresh_tokens WHERE token = $1",
-    [refreshToken]
-  );
-  const token = tokenResult.rows[0];
+  if (refreshToken) {
+    const tokenResult = await pool.query(
+      "SELECT * FROM refresh_tokens WHERE token = $1",
+      [refreshToken]
+    );
+    const token = tokenResult.rows[0];
 
-  if (!token) return res.status(403).send("Forbidden");
+    if (!token) return res.status(403).send("Forbidden");
 
-  jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => {
-    if (err) return res.status(403).send("Forbidden");
-    const newAccessToken = genrateAccessToken(user.userId);
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => {
+      if (err) return res.status(403).send("Forbidden");
+      const newAccessToken = genrateAccessToken(user.userId);
 
-    res.cookie("accessToken", newAccessToken, {
-      httpOnly: false,
-      secure: true,
-      sameSite: "Strict",
-      maxAge:15* 60 * 1000,
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: false,
+        secure: true,
+        sameSite: "Strict",
+        maxAge: 15 * 60 * 1000,
+      });
+
+      res.sendStatus(200);
     });
-
-    res.sendStatus(200);
-  });
+  }
 });
 
 const logout = asyncHandler(async (req, res) => {
@@ -145,10 +145,18 @@ const logout = asyncHandler(async (req, res) => {
   res.sendStatus(204);
 });
 const getAuthUser = asyncHandler(async (req, res) => {
-  if (!req.user) {
-      return res.status(401).json({ message: 'User not authenticated' });
+  if (req.user) {
+    const user = await pool.query(
+      "SELECT firstname,lastname,email,role FROM users WHERE userId = $1",
+      [req.user.userId]
+    );
+    res.json(user.rows[0]);
   }
-  const user = await pool.query("SELECT firstname,lastname,email,role FROM users WHERE userId = $1",[req.user.userId])
-  res.json(user.rows[0]);
 });
-module.exports = { registerUser, loginUser, refreshAccessToken, logout, getAuthUser};
+module.exports = {
+  registerUser,
+  loginUser,
+  refreshAccessToken,
+  logout,
+  getAuthUser,
+};
