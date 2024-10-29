@@ -1,9 +1,9 @@
 import CartList from "@/Components/CartList";
-import Checkout from "@/Components/Checkout";
 import Nav from "@/Components/Nav";
 import { Button } from "@/Components/ui/button";
 import cartIcon from "@/assets/shopping_cart_dark.svg";
 import { useState } from "react";
+import Summary from "@/Components/Summary";
 
 function Cart() {
   const [products, setProdacts] = useState<number>(1);
@@ -22,7 +22,7 @@ function Cart() {
         ) : (
           <div className="flex flex-col justify-between items-start gap-2 lg:flex-row ">
             <CartList/>
-            <Checkout/>
+            <Summary/>
           </div>
         )}
       </div>

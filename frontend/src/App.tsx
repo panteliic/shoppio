@@ -17,7 +17,7 @@ function App() {
     proba();
   }, []);
   return (
-    <div className="text-xl overflow-x-hidden">
+    <div className="text-xl overflow-x-hidden bg-gray-200 min-h-screen">
       <Nav/>
       <ProductsList/>
     </div>

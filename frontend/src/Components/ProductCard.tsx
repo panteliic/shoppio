@@ -1,16 +1,22 @@
-import { Button } from "./ui/button"
+import { Button } from "./ui/button";
 
-function ProductCard() {
-  return (
-    <div className="w-full  md:w-1/3 flex flex-col items-center justify-center p-5 shadow">
-        <img src="/iphone.jpg" alt="product image"  className="w-1/2"/>
-        <div className="text-center flex flex-col gap-5">
-            <p className="font-bold text-sm "> APPLE iPhone 15 Plus 6/256GB Yellow MU1D3SX/A</p>
-            <p className="font-bold text-xl">129.999,00 RSD</p>
-            <Button className="w-full">Add to cart</Button>
-        </div>
-    </div>
-  )
+interface ProductCardProps {
+  name: string;
+  image: string;
+  price: number;
 }
 
-export default ProductCard
+function ProductCard({ name, image, price }: ProductCardProps) {
+  return (
+    <div className="flex flex-col items-center justify-between p-5 bg-background shadow-lg rounded-lg">
+      <img src={image} alt={name} className="w-1/2 h-auto mb-4 object-cover" />
+      <div className="text-center flex flex-col justify-center items-center gap-3">
+        <p className="font-bold text-lg">{name}</p>
+        <p className="font-bold text-xl mb-5">{price.toFixed(2)} RSD</p>
+      </div>
+      <Button className="w-3/4">Add to cart</Button>
+    </div>
+  );
+}
+
+export default ProductCard;
