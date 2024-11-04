@@ -1,23 +1,55 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import api from "../api";
 
 interface ProductCardProps {
+  productId: number;
   name: string;
   image: string;
   price: number;
+  isFavorite:any;
 }
 
-function ProductCard({ name, image, price }: ProductCardProps) {
+function ProductCard({ productId, name, image, price,isFavorite }: ProductCardProps) {
   const [isImageLoading, setIsImageLoading] = useState(true);
-  const [isFilled, setIsFilled] = useState(false);
-
+  const [isFilled, setIsFilled] = useState(isFavorite);
   const handleImageLoad = () => {
     setIsImageLoading(false);
   };
 
-  const toggleHeart = () => {
-    setIsFilled(!isFilled);
+  const toggleHeart = async () => {
+    if (!isFilled) {
+      try {
+        await api.post(
+          "/api/addFavoriteProduct",
+          {
+            productId: productId,
+          },
+          {
+            headers: { "Content-type": "application/json" },
+            withCredentials: true,
+          }
+        );
+        setIsFilled(!isFilled);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    } else {
+      try {
+        await api.delete(
+          `/api/removeFavoriteProduct/${productId}`,
+          {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+          }
+        );
+
+        setIsFilled(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
   };
 
   return (

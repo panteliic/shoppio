@@ -52,8 +52,10 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
     }
 
     authUser();
+
     
   }, [accessTokenCookie]);
+  
   return (
     <Context.Provider
       value={{

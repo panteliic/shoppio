@@ -1,8 +1,10 @@
 import axios from "axios";
 import ProductCard from "./ProductCard";
 import { useEffect, useState } from "react";
+import { useFavorites } from "@/Context/FavoritesProvider";
 
 interface Product {
+  productid: number;
   name: string;
   image: string;
   price: number;
@@ -10,18 +12,17 @@ interface Product {
 
 function ProductsList() {
   const [products, setProducts] = useState<Product[]>([]);
-
+  const { favoriteProductIds } = useFavorites();
   const fetchProducts = async () => {
     try {
       const response = await axios.get("http://localhost:5500/api/products", {
         withCredentials: true,
       });
-      setProducts(response.data)
+      setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
-
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -32,9 +33,11 @@ function ProductsList() {
         products.map((product, index) => (
           <ProductCard
             key={index}
+            productId={product.productid}
             name={product.name}
             image={product.image}
             price={product.price}
+            isFavorite={favoriteProductIds.includes(product.productid)}
           />
         ))
       ) : (

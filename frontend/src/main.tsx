@@ -8,6 +8,8 @@ import ProductDetails from "./Pages/ProductDetails.tsx";
 import Cart from "./Pages/Cart.tsx";
 import Provider from "./Context/Provider.tsx";
 import { CookiesProvider } from "react-cookie";
+import Favorites from "./Pages/Favorites.tsx";
+import { FavoritesProvider } from "./Context/FavoritesProvider.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,12 +31,18 @@ const router = createBrowserRouter([
     path: "/cart",
     element: <Cart />,
   },
+  {
+    path: "/favorites",
+    element: <Favorites />,
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(
   <CookiesProvider>
     <Provider>
-      <RouterProvider router={router} />
+      <FavoritesProvider>
+        <RouterProvider router={router} />
+      </FavoritesProvider>
     </Provider>
   </CookiesProvider>
 );

@@ -147,7 +147,7 @@ const logout = asyncHandler(async (req, res) => {
 const getAuthUser = asyncHandler(async (req, res) => {
   if (req.user) {
     const user = await pool.query(
-      "SELECT firstname,lastname,email,role FROM users WHERE userId = $1",
+      "SELECT * FROM users WHERE userId = $1",
       [req.user.userId]
     );
     res.json(user.rows[0]);
