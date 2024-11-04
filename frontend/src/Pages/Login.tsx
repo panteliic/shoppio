@@ -37,6 +37,7 @@ interface User {
   lastname: string;
   username: string;
   role: string;
+  address:string;
 }
 
 function Login() {
@@ -51,7 +52,6 @@ function Login() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     try {
       const response = await fetch("http://localhost:5500/api/login", {
         method: "POST",

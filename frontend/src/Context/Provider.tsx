@@ -26,6 +26,7 @@ interface User {
   lastname: string;
   username: string;
   role: string;
+  address:string;
 }
 
 const Context = createContext<AppContextType | null>(null);

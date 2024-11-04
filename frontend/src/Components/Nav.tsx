@@ -6,6 +6,14 @@ import userIcon from "@/assets/user-regular.svg";
 import userProfileIcon from "@/assets/circle-user-regular.svg";
 import searchIcon from "@/assets/search_icon.svg";
 import { useProvider } from "@/Context/Provider";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export default function Nav() {
   const provider = useProvider();
@@ -26,12 +34,30 @@ export default function Nav() {
         </div>
         <ul className="flex items-center gap-4 ">
           {provider.user ? (
-            <li className="flex items-center gap-2 text-primary-foreground cursor-pointer text-lg">
-              <img src={userProfileIcon} alt="profile icon" className="w-6" />
-              <p className="hidden md:flex">
-                {provider.user.firstname} {provider.user.lastname}
-              </p>
-            </li>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                {" "}
+                <li className="flex items-center gap-2 text-primary-foreground cursor-pointer text-lg">
+                  <img
+                    src={userProfileIcon}
+                    alt="profile icon"
+                    className="w-6"
+                  />
+                  <p className="hidden md:flex">
+                    {provider.user.firstname} {provider.user.lastname}
+                  </p>
+                </li>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className=" w-56" align="start">
+                <DropdownMenuLabel className="text-lg px-3 text-start">My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-base cursor-pointer p-3">
+                  <a href="#">Favorites</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-base cursor-pointer p-3">Profile</DropdownMenuItem>
+                <DropdownMenuItem className="text-base cursor-pointer p-3 text-destructive font-semibold">Logout</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <li>
               <a

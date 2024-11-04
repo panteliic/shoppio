@@ -7,8 +7,7 @@ function App() {
   useEffect(() => {
     async function proba() {
       try {
-        const response = await api.get('/proba');
-        console.log(response.data);
+        await api.get('/proba');
       } catch (error) {
         console.error('Error fetching data:', error);
       }
