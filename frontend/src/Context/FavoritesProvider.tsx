@@ -41,8 +41,6 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     fetchFavoriteProducts();
   }, []);
-  console.log(favoriteProductIds);
-  
 
   return (
     <FavoritesContext.Provider

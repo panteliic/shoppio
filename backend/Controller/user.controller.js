@@ -43,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
       "INSERT INTO users (firstname,lastname,email,password,role) VALUES ($1, $2, $3, $4,$5)",
       [firstname, lastname, email, hashPassword, "user"]
     );
-    const userId = userResult.rows[0].userId;
+    const userId = userResult.rows[0].userid;
 
     const accessToken = genrateAccessToken(userId);
     const refreshToken = await genarateRefreshToken(userId);
@@ -140,6 +140,8 @@ const logout = asyncHandler(async (req, res) => {
       refreshToken,
     ]);
     res.clearCookie("refreshToken");
+    res.clearCookie("accessToken");
+
   }
 
   res.sendStatus(204);

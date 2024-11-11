@@ -2,21 +2,23 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import api from "../api";
+import { useProvider } from "@/Context/Provider";
 
 interface ProductCardProps {
   productId: number;
   name: string;
   image: string;
   price: number;
-  isFavorite:any;
+  isFavorite: any;
 }
 
-function ProductCard({ productId, name, image, price,isFavorite }: ProductCardProps) {
+function ProductCard({ productId, name, image, price, isFavorite }: ProductCardProps) {
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [isFilled, setIsFilled] = useState(isFavorite);
   const handleImageLoad = () => {
     setIsImageLoading(false);
   };
+  const provider = useProvider();
 
   const toggleHeart = async () => {
     if (!isFilled) {
@@ -52,6 +54,40 @@ function ProductCard({ productId, name, image, price,isFavorite }: ProductCardPr
     }
   };
 
+  const addToCart = async () => {
+    try {
+      if (provider.user) {
+        // Ako je korisnik prijavljen, šaljemo proizvod u korpu putem API poziva
+        await api.post(
+          "/api/addToCart",
+          {
+            productId: productId,
+          },
+          {
+            headers: { "Content-type": "application/json" },
+            withCredentials: true,
+          }
+        );
+      } else {
+        // Ako korisnik nije prijavljen, čuvamo proizvod u localStorage
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const newProduct = { productId, name, image, price, quantity: 1 };
+
+        // Ako proizvod već postoji u localStorage, povećaj količinu
+        const existingProductIndex = cart.findIndex((item: any) => item.productId === productId);
+        if (existingProductIndex >= 0) {
+          cart[existingProductIndex].quantity += 1;
+        } else {
+          cart.push(newProduct);
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-between p-5 bg-background shadow-lg rounded-lg relative">
       {isImageLoading && (
@@ -60,16 +96,14 @@ function ProductCard({ productId, name, image, price,isFavorite }: ProductCardPr
       <img
         src={image}
         alt={name}
-        className={`w-1/2 h-auto mb-4 object-cover ${
-          isImageLoading ? "hidden" : "block"
-        }`}
+        className={`w-1/2 h-auto mb-4 object-cover ${isImageLoading ? "hidden" : "block"}`}
         onLoad={handleImageLoad}
       />
       <div className="text-center flex flex-col justify-center items-center gap-3">
         <p className="font-bold text-lg">{name}</p>
         <p className="font-bold text-xl mb-5">{price.toFixed(2)} RSD</p>
       </div>
-      <Button className="w-3/4">Add to cart</Button>
+      <Button className="w-3/4" onClick={addToCart}>Add to cart</Button>
       <svg
         onClick={toggleHeart}
         xmlns="http://www.w3.org/2000/svg"

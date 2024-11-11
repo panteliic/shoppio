@@ -14,11 +14,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import api from "@/api";
 
 export default function Nav() {
   const provider = useProvider();
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
 
+  const logout = async () => {
+    try {
+      await api.post("/api/logout", {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      provider.removeAccessTokenCookie("accessToken")
+    } catch (error) {
+      console.error("Error fetching favorite products:", error);
+    }
+  };
   return (
     <div className="w-screen p-6 bg-primary m-auto flex flex-col gap-3">
       <div className="container flex m-auto items-center justify-between">
@@ -49,13 +61,19 @@ export default function Nav() {
                 </li>
               </DropdownMenuTrigger>
               <DropdownMenuContent className=" w-56" align="start">
-                <DropdownMenuLabel className="text-lg px-3 text-start">My Account</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-lg px-3 text-start">
+                  My Account
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-base cursor-pointer p-3">
-                  <a href="#">Favorites</a>
+                  <a href="/favorites">Favorites</a>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-base cursor-pointer p-3">Profile</DropdownMenuItem>
-                <DropdownMenuItem className="text-base cursor-pointer p-3 text-destructive font-semibold">Logout</DropdownMenuItem>
+                <DropdownMenuItem className="text-base cursor-pointer p-3">
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-base cursor-pointer p-3 text-destructive font-semibold" onClick={logout}>
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

@@ -16,7 +16,6 @@ const addFavoriteProduct = asyncHandler(async (req, res) => {
 });
 const removeFavoriteProduct = asyncHandler(async (req, res) => {
   const { productId } = req.params;
-
   try {
     const result = await pool.query(
       "DELETE FROM favorites WHERE userId = $1 AND productId = $2",
@@ -34,6 +33,7 @@ const removeFavoriteProduct = asyncHandler(async (req, res) => {
   }
 });
 const favoriteProducts = asyncHandler(async (req, res) => {
+
   try {
     const result = await pool.query(
       `select "name", image, price, f.productid as productid
@@ -50,6 +50,10 @@ const favoriteProducts = asyncHandler(async (req, res) => {
   }
 });
 const favoriteProductIds = asyncHandler(async (req, res) => {
+  if(!req.user) {
+    return res.status(401)
+ }
+
   try {
     const result = await pool.query(
       `select productid
