@@ -26,7 +26,7 @@ export default function Nav() {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      provider.removeAccessTokenCookie("accessToken")
+      provider.removeAccessTokenCookie("accessToken");
     } catch (error) {
       console.error("Error fetching favorite products:", error);
     }
@@ -37,13 +37,14 @@ export default function Nav() {
         <div className="text-2xl font-bold text-primary-foreground uppercase tracking-wide">
           <a href="/">Shoppio</a>
         </div>
-        <div className=" bg-input hidden items-center rounded-full p-1 md:w-1/3 md:flex xl:w-1/4  ">
+        {/*
+          <div className=" bg-input hidden items-center rounded-full p-1 md:w-1/3 md:flex xl:w-1/4  ">
           <Input
             className="border-0 ring-0 shadow-none focus:border-0 focus-visible:ring-0 text-sm"
             placeholder="Enter a search term "
           />
           <MagnifyingGlassIcon className=" w-12 cursor-pointer" />
-        </div>
+        </div> */}
         <ul className="flex items-center gap-4 ">
           {provider.user ? (
             <DropdownMenu>
@@ -71,7 +72,10 @@ export default function Nav() {
                 <DropdownMenuItem className="text-base cursor-pointer p-3">
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-base cursor-pointer p-3 text-destructive font-semibold" onClick={logout}>
+                <DropdownMenuItem
+                  className="text-base cursor-pointer p-3 text-destructive font-semibold"
+                  onClick={logout}
+                >
                   Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>

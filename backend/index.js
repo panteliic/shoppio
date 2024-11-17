@@ -9,6 +9,7 @@ const favoritesRouter = require("./Routes/favorites.routes");
 const cartRouter = require("./Routes/cart.routes");
 const authenticateToken = require('./middleware/auth.middleware');
 const { getAuthUser } = require('./Controller/user.controller');
+const sendMail = require('./email');
 
 const port = 5500
 
@@ -28,7 +29,7 @@ app.use("/api",userRouter)
 app.use("/api",productRouter)
 app.use("/api",favoritesRouter)
 app.use("/api",cartRouter)
-
+app.use("/api",sendMail)
 app.listen(port,()=> {
     console.log(`Server running on port : ${port}`);
     

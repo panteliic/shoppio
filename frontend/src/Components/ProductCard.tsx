@@ -57,7 +57,6 @@ function ProductCard({ productId, name, image, price, isFavorite }: ProductCardP
   const addToCart = async () => {
     try {
       if (provider.user) {
-        // Ako je korisnik prijavljen, šaljemo proizvod u korpu putem API poziva
         await api.post(
           "/api/addToCart",
           {
@@ -69,11 +68,9 @@ function ProductCard({ productId, name, image, price, isFavorite }: ProductCardP
           }
         );
       } else {
-        // Ako korisnik nije prijavljen, čuvamo proizvod u localStorage
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         const newProduct = { productId, name, image, price, quantity: 1 };
 
-        // Ako proizvod već postoji u localStorage, povećaj količinu
         const existingProductIndex = cart.findIndex((item: any) => item.productId === productId);
         if (existingProductIndex >= 0) {
           cart[existingProductIndex].quantity += 1;

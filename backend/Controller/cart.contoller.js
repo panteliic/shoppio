@@ -84,4 +84,14 @@ const cart = asyncHandler(async (req,res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-module.exports = { addToCart, updateCartItem,cart };
+const removeCart = asyncHandler(async(req,res)=>{
+
+  try {
+    await pool.query("DELETE FROM cart where userid = $1",[req.user.userId])
+    res.status(200)
+  }catch(err) {
+    res.status(500).send("Server error")
+  }
+
+});
+module.exports = { addToCart, updateCartItem,cart,removeCart };

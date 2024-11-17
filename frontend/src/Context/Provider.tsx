@@ -24,7 +24,7 @@ interface AppContextType {
 interface User {
   firstname: string;
   lastname: string;
-  username: string;
+  email: string;
   role: string;
   address:string;
 }

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useProvider } from "@/Context/Provider"; 
 import api from "@/api";
 
@@ -12,9 +12,11 @@ interface Product {
 
 interface CartContextType {
   cart: Product[];
+  setCart: (cart: Product[]) => void;
   addToCart: (product: Product) => void;
   updateCart: (updatedProduct: Product) => void;
   loadCart: () => void;
+  totalPrice: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -71,13 +73,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
-
+  const totalPrice = cart.reduce((accumulator, item) => {
+    return accumulator + item.price * item.quantity;
+  }, 0);
   useEffect(() => {
     loadCart();
   }, [provider.user]); 
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, updateCart, loadCart }}>
+    <CartContext.Provider value={{ cart,setCart, addToCart, updateCart, loadCart ,totalPrice}}>
       {children}
     </CartContext.Provider>
   );

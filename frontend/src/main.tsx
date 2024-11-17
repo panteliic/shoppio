@@ -11,6 +11,7 @@ import { CookiesProvider } from "react-cookie";
 import Favorites from "./Pages/Favorites.tsx";
 import { FavoritesProvider } from "./Context/FavoritesProvider.tsx";
 import { CartProvider } from "./Context/CartProvider.tsx";
+import Checkout from "./Pages/Checkout.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: "/favorites",
     element: <Favorites />,
+  },
+  {
+    path: "/checkout",
+    element: <Checkout />,
   },
 ]);
 
